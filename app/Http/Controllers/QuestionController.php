@@ -2,29 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\QuestionResource;
 use App\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use \Illuminate\Support\Collection;
+use Symfony\Component\HttpFoundation\Response;
 
 class QuestionController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Support\Collection
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return QuestionResource::collection(Question::all());
     }
 
     /**
@@ -35,7 +29,9 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       /* auth()->user()->question()->create($request->all());*/
+        Question::create($request->all());
+        return response('created', response::HTTP_CREATED);
     }
 
     /**
@@ -46,18 +42,7 @@ class QuestionController extends Controller
      */
     public function show(Question $question)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Question  $question
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Question $question)
-    {
-        //
+        return new QuestionResource($question);
     }
 
     /**
@@ -80,6 +65,7 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
-        //
+        $question->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
